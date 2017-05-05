@@ -74,7 +74,7 @@ tmr.alarm(0, 1000, 1, function()                            -- Verbinding opzett
 end)
 
 -- id -- Interval -- ???
-tmr.alarm(1, 1, 1, function ()
+tmr.alarm(1, 50, 1, function ()
     if (FlashOn) then
         if (math.abs(adc.read(0) - avgLight)>50) then
             FlashOn = false
