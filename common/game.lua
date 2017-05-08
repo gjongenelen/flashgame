@@ -1,7 +1,7 @@
 Games = {
-    a = { a = 'RANDOM' },
-    b = { a = 'RANDOM_NOSERVER' },
-    c = { a = 'SERVER', b = 'A', c = 'B', d = 'C', e = 'D' }
+    a = { 'RANDOM' },
+    b = { 'RANDOM_NOSERVER' },
+    c = { 'SERVER', 'A', 'B', 'C', 'D' }
 }
 
 Game = { config = { colors = { red = 0, green = 255, blue = 0, accent = { red = 0, green = 100, blue = 0 } } }, previous = nil, step = 1 }
@@ -20,7 +20,6 @@ function Game.startAfter(seconds)
 end
 
 function Game.nextStep()
-
     if (Games['a'][Game.step] == 'RANDOM') then
         Game.random(true)
     end
@@ -44,13 +43,13 @@ end
 
 function Game.alarmLocal(callback)
     Led.alarm({
-        a = { g = 255, r = 0, b = 0 },
-        b = { g = 255, r = 0, b = 0 },
-        c = { g = 255, r = 0, b = 0 },
-        d = { g = 255, r = 0, b = 0 },
-        e = { g = 255, r = 0, b = 0 },
-        f = { g = 255, r = 0, b = 0 },
-        z = { g = 100, r = 0, b = 0 },
+        a = { g = Game.config.colors.green, r = Game.config.colors.red, b = Game.config.colors.blue },
+        b = { g = Game.config.colors.green, r = Game.config.colors.red, b = Game.config.colors.blue },
+        c = { g = Game.config.colors.green, r = Game.config.colors.red, b = Game.config.colors.blue },
+        d = { g = Game.config.colors.green, r = Game.config.colors.red, b = Game.config.colors.blue },
+        e = { g = Game.config.colors.green, r = Game.config.colors.red, b = Game.config.colors.blue },
+        f = { g = Game.config.colors.green, r = Game.config.colors.red, b = Game.config.colors.blue },
+        z = { g = Game.config.colors.accent.green, r = Game.config.colors.accent.red, b = Game.config.colors.accent.blue },
     }, 60)
     Sensor.waitForInteraction(function()
         Led.off()
@@ -65,8 +64,9 @@ function Game.random(includeLocal)
     else
         random = math.random(1, tablelength(Server.connections))
     end
-    if Game.previous == random then
-        Game.random()
+    print(tablelength(Server.connections))
+    if Game.previous == random and tablelength(Server.connections) > 0 then
+        Game.random(includeLocal)
     else
         Game.previous = random
         if random == 0 then

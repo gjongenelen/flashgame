@@ -9,34 +9,27 @@ Clock.start()
 
 Led.init()
 
-Wifi.connectClient(function(connection, message)
+Wifi.connect(function()
+    Client.connect(function(connection, message)
+        local data = cjson.decode(message)
 
-    print("data", message)
-
-    local data = cjson.decode(message)                 -- Decodeer JSON
-    --  print json data -- for k,v in pairs(data) do print(k,v) end
-
-    if (data['action'] == "config") then              -- Wanneer configuratie data wordt meegestuurd, lees deze dan uit
-        Game.config = data['config']
-    end
-    if (data['action'] == "startBlinking") then       -- Wanneer FLashLED aan moet , lees dit dan uit
-        Game.alarmLocal(function()
-            local ok, json = pcall(cjson.encode, {action="stoppedBlinking"})
-            if ok then
+        if (data['action'] == "config") then
+            Game.config = data['config']
+        end
+        if (data['action'] == "startBlinking") then
+            Game.alarmLocal(function()
+                local _, json = pcall(cjson.encode, {action="stoppedBlinking"})
                 pcall(function()
                     connection:send(json .. " ")
                 end)
-            end
-        end)
-    end
-    if (data['action'] == "ping") then       -- Wanneer FLashLED aan moet , lees dit dan uit
-        local ok, json = pcall(cjson.encode, {action="pong"})
-        if ok then
+            end)
+        end
+        if (data['action'] == "ping") then
+            local _, json = pcall(cjson.encode, {action="pong"})
             pcall(function()
                 connection:send(json .. " ")
             end)
         end
-    end
-
+    end)
 end)
 

@@ -24,7 +24,7 @@ function Server.startPingTimer()
             if v < Clock.seconds - 5 and v >= Clock.seconds - 10 then
                 Server.sendToMac(mac, { action = "ping" })
             end
-            if v < Clock.seconds - 10 then
+            if v < Clock.seconds - 16 then
                 print("Client not responding to pings, deauth: ", mac)
                 wifi.ap.deauth(mac)
                 Server.clients[mac] = nil

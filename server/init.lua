@@ -9,6 +9,8 @@ Clock.start()
 
 Led.init()
 
+Wifi.startServer()
+
 Server.start(function(connection, encodedData)
 
     local _, ip = connection:getpeer()
