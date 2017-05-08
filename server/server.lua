@@ -44,9 +44,9 @@ function Server.start(callback)
         Server.connections[Server.getMacByIp(ip)] = connection
 
         connection:on("connection", function(_, _)
-            port, ip = connection:getpeer()
+            local _, ip = connection:getpeer()
             print("New client", Server.getMacByIp(ip))
-            Server.sendToMac(Server.getMacByIp(ip), { action = "config", Game.config })
+            Server.sendToMac(Server.getMacByIp(ip), { action = "config", config = Game.config })
         end)
 
         connection:on("receive", function(connection, bundledData)

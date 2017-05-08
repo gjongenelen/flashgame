@@ -9,9 +9,6 @@ Clock.start()
 
 Led.init()
 
-
-
-
 Server.start(function(connection, encodedData)
 
     local _, ip = connection:getpeer()

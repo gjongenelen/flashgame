@@ -42,7 +42,7 @@ function Game.nextStep()
 
 end
 
-function Game.alarmLocal()
+function Game.alarmLocal(callback)
     Led.alarm({
         a = { g = 255, r = 0, b = 0 },
         b = { g = 255, r = 0, b = 0 },
@@ -54,7 +54,7 @@ function Game.alarmLocal()
     }, 60)
     Sensor.waitForInteraction(function()
         Led.off()
-        Game.nextStep()
+        callback()
     end)
 end
 
@@ -70,12 +70,14 @@ function Game.random(includeLocal)
     else
         Game.previous = random
         if random == 0 then
-            Game.alarmLocal()
+            Game.alarmLocal(function()
+                Game.nextStep()
+            end)
         else
             local i = 1
             for mac, _ in pairs(Server.connections) do
                 if i == random then
-                    Server.sendToMac(mac, { action = "alarm" })
+                    Server.sendToMac(mac, { action = "startBlinking" })
                 end
                 i = i + 1
             end
