@@ -10,6 +10,7 @@ end
 
 function Wifi.connect(callback)
     wifi.sta.disconnect()
+    wifi.setphymode(wifi.PHYMODE_B)
     wifi.setmode(wifi.STATION)
     wifi.sta.config(Wifi.ssid, Wifi.password)
     wifi.sta.connect()
