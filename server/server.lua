@@ -11,7 +11,7 @@ function Server.getMacByIp(ip1)
 end
 
 function Server.sendToMac(mac, data)
-    local ok, json = pcall(cjson.encode, data)
+    local _, json = pcall(cjson.encode, data)
     pcall(function()
         Server.connections[mac]:send(json .. " ")
         print("out:", mac, json)
@@ -39,11 +39,11 @@ function Server.start(callback)
     Server.socket = net.createServer(net.TCP)
     Server.socket:listen(Server.port, function(connection)
 
-        local port, ip = connection:getpeer()
+        local _, ip = connection:getpeer()
         Server.clients[Server.getMacByIp(ip)] = Clock.seconds
         Server.connections[Server.getMacByIp(ip)] = connection
 
-        connection:on("connection", function(sck, c)
+        connection:on("connection", function(_, _)
             port, ip = connection:getpeer()
             print("New client", Server.getMacByIp(ip))
             Server.sendToMac(Server.getMacByIp(ip), { action = "config", Game.config })
