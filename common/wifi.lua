@@ -3,7 +3,7 @@ Wifi = { ssid = "FlashGame", password = "12345678" }
 
 function Wifi.startServer()
     wifi.setmode(wifi.STATIONAP)
-    wifi.setphymode(wifi.PHYMODE_G)
+    wifi.setphymode(wifi.PHYMODE_B)
     wifi.ap.config({ ssid = Wifi.ssid, pwd = Wifi.password, max = 4, channel = 2 });
     print("Server IP Address:", wifi.ap.getip())
 end
