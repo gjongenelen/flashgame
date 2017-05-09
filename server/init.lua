@@ -27,4 +27,3 @@ Server.start(function(connection, encodedData)
 
 end)
 
-Game.startAfter(5)

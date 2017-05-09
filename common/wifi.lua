@@ -29,7 +29,11 @@ function Wifi.connect(callback)
 
     tmr.alarm(2, 1000, 1, function()
         if(wifi.sta.getip()~=nil) then
-            tmr.stop(2)
+            tmr.alarm(2, 2500, 1, function()
+                if(wifi.sta.getip()==nil) then
+                    Wifi.connect(callback)
+                end
+            end)
             Led.off()
             print("Client IP Address:", wifi.sta.getip())
             callback()

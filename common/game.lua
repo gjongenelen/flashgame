@@ -4,10 +4,13 @@ Games = {
     c = { 'SERVER', 'A', 'B', 'C', 'D' }
 }
 
-Game = { config = { colors = { red = 0, green = 255, blue = 0, accent = { red = 0, green = 100, blue = 0 } } }, previous = nil, step = 1 }
+Game = { config = { colors = { red = 0, green = 255, blue = 0, accent = { red = 0, green = 100, blue = 0 } } }, previous = nil, step = 1, running = false, currentNode = nil }
 
 function Game.start()
-    Game.nextStep()
+    if not Game.running then
+        Game.running = true
+        Game.nextStep()
+    end
 end
 
 function Game.startAfter(seconds)
@@ -17,6 +20,13 @@ function Game.startAfter(seconds)
             tmr.stop(5)
         end
     end)
+end
+
+function Game.repeatStep()
+    Game.step = Game.step - 1
+    if (Game.step == 0) then
+        Game.step = 1
+    end
 end
 
 function Game.nextStep()
@@ -42,6 +52,7 @@ function Game.nextStep()
 end
 
 function Game.alarmLocal(callback)
+    Game.currentNode = "LOCAL"
     Led.alarm({
         a = { g = Game.config.colors.green, r = Game.config.colors.red, b = Game.config.colors.blue },
         b = { g = Game.config.colors.green, r = Game.config.colors.red, b = Game.config.colors.blue },
@@ -77,6 +88,7 @@ function Game.random(includeLocal)
             local i = 1
             for mac, _ in pairs(Server.connections) do
                 if i == random then
+                    Game.currentNode = mac
                     Server.sendToMac(mac, { action = "startBlinking" })
                 end
                 i = i + 1

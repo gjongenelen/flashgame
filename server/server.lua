@@ -29,6 +29,9 @@ function Server.startPingTimer()
                 wifi.ap.deauth(mac)
                 Server.clients[mac] = nil
                 Server.connections[mac] = nil
+                if Game.currentNode == mac then
+                    Game.repeatStep()
+                end
             end
         end
     end)
@@ -47,6 +50,9 @@ function Server.start(callback)
             local _, ip = connection:getpeer()
             print("New client", Server.getMacByIp(ip))
             Server.sendToMac(Server.getMacByIp(ip), { action = "config", config = Game.config })
+            if not Game.running then
+                Game.startAfter(2)
+            end
         end)
 
         connection:on("receive", function(connection, bundledData)
