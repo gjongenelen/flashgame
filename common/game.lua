@@ -27,6 +27,7 @@ function Game.repeatStep()
     if (Game.step == 0) then
         Game.step = 1
     end
+    Game.nextStep()
 end
 
 function Game.nextStep()
