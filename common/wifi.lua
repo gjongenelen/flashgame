@@ -23,6 +23,7 @@ function Wifi.connect(callback)
         d = { g = 0, r = 0, b = 0 },
         e = { g = 0, r = 0, b = 0 },
         f = { g = 0, r = 0, b = 0 },
+        g = { g = 0, r = 0, b = 0 },
         z = { g = 100, r = 100, b = 0 },
     }, 200)
     print("Connecting...")

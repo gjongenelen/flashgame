@@ -4,7 +4,7 @@ Games = {
     c = { 'SERVER', 'A', 'B', 'C', 'D' }
 }
 
-Game = { config = { colors = { red = 0, green = 255, blue = 0, accent = { red = 0, green = 100, blue = 0 } } }, previous = nil, step = 1, running = false, currentNode = nil }
+Game = { config = { colors = { red = 0, green = 255, blue = 0, accent = { red = 255, green = 0, blue = 0 } } }, previous = nil, step = 1, running = false, currentNode = nil }
 
 function Game.start()
     if not Game.running then
@@ -61,6 +61,7 @@ function Game.alarmLocal(callback)
         d = { g = Game.config.colors.green, r = Game.config.colors.red, b = Game.config.colors.blue },
         e = { g = Game.config.colors.green, r = Game.config.colors.red, b = Game.config.colors.blue },
         f = { g = Game.config.colors.green, r = Game.config.colors.red, b = Game.config.colors.blue },
+        g = { g = Game.config.colors.green, r = Game.config.colors.red, b = Game.config.colors.blue },
         z = { g = Game.config.colors.accent.green, r = Game.config.colors.accent.red, b = Game.config.colors.accent.blue },
     }, 60)
     Sensor.waitForInteraction(function()
