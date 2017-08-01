@@ -1,5 +1,5 @@
 
-Sensor = { interval = 50, threshold = 30, avgLight = 0, isPolling = false}
+Sensor = { interval = 50, threshold = 33, avgLight = 0, isPolling = false}
 
 
 tmr.alarm(3, 200, 1, function ()
