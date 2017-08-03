@@ -24,6 +24,12 @@ Wifi.connect(function()
                 end)
             end)
         end
+        if (data['action'] == "stopBlinking") then
+            Led.off()
+        end
+        if (data['action'] == "doneAlarm") then
+            Led.alarmDone()
+        end
         if (data['action'] == "ping") then
             local _, json = pcall(cjson.encode, {action="pong"})
             pcall(function()

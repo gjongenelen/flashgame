@@ -4,7 +4,9 @@ dofile("game.lua")
 dofile("sensor.lua")
 dofile("leds.lua")
 dofile("server.lua")
+dofile("config.lua")
 
+Config.startListening()
 Clock.start()
 
 Led.init()

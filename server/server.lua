@@ -37,6 +37,12 @@ function Server.startPingTimer()
     end)
 end
 
+function Server.sendDone()
+    for mac, v in pairs(Server.clients) do
+        Server.sendToMac(mac, { action = "doneAlarm" })
+    end
+end
+
 function Server.start(callback)
 
     Server.socket = net.createServer(net.TCP)
@@ -50,9 +56,7 @@ function Server.start(callback)
             local _, ip = connection:getpeer()
             print("New client", Server.getMacByIp(ip))
             Server.sendToMac(Server.getMacByIp(ip), { action = "config", config = Game.config })
-            if not Game.running then
-                Game.startAfter(2)
-            end
+            Game.startIfWaiting()
         end)
 
         connection:on("receive", function(connection, bundledData)

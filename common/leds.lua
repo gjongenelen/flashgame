@@ -32,14 +32,32 @@ function Led.set(config)
     ws2812.write(buffer)
 end
 
-function Led.alarm(config, speed)
+function Led.alarmDone()
+    Led.alarm({
+        a = { g = 0, r = 0, b = 255 },
+        b = { g = 0, r = 0, b = 255 },
+        c = { g = 0, r = 0, b = 255 },
+        d = { g = 0, r = 0, b = 255 },
+        e = { g = 0, r = 0, b = 255 },
+        f = { g = 0, r = 0, b = 255 },
+        g = { g = 0, r = 0, b = 255 },
+        z = { g = 0, r = 255, b = 0 },
+    }, 500, true)
+end
+
+function Led.alarm(config, speed, once)
     Led.alarmOn = true
     local loopstate = 1
     tmr.alarm(6, speed, 1, function()
         if (Led.alarmOn) then
             loopstate = loopstate + 1
             if (loopstate == 8) then
-                loopstate = 1
+                if once then
+                    Led.off()
+                    return
+                else
+                    loopstate = 1
+                end
             end
             local buffer = ws2812.newBuffer(7, 3)
             buffer:set(1, string.char(config['a']['g'], config['a']['r'], config['a']['b']))
@@ -59,7 +77,7 @@ function Led.alarm(config, speed)
             ws2812.write(buffer)
         else
             tmr.stop(6)
-            Led.off()
+            --Led.off()
         end
     end)
 end
