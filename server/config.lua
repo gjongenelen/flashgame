@@ -55,7 +55,7 @@ end
 function Config.startListening()
     gpio.mode(0, gpio.OUTPUT)
 
-    tmr.alarm(3, 1000, 1, function()
+    tmr.alarm(3, 100, 1, function()
 
         Config.handleButton0Val(gpio.read(0))
         Config.handleSwitch0Val(gpio.read(1))
