@@ -18,6 +18,10 @@ Game = {
     waitingForClient = false
 }
 
+function Game.setRandom(random)
+    Game.isRandom = random
+end
+
 function Game.start()
     if not Game.running then
         Led.off()
@@ -26,14 +30,17 @@ function Game.start()
     end
 end
 
-function Game.stop()
+function Game.stop(softly)
     Game.stepCount = 0
     Game.running = false
     Game.step = 1
     if Game.currentNode == "LOCAL" then
         Led.off()
     else
-        Server.sendToMac(Game.currentNode, { action = "stopBlinking" })
+        if not softly then
+            Server.sendToMac(Game.currentNode, { action = "stopBlinking" })
+        end
+
     end
 end
 
@@ -95,7 +102,7 @@ function Game.nextStep()
 
     if Game.isRandom then
         if Game.stepCount >= (Game.rounds * 5) and Game.rounds ~= 0 then
-            Game.stop()
+            Game.stop(true)
             Server.sendDone()
             Led.alarmDone()
         else
@@ -159,6 +166,7 @@ function Game.random(includeLocal)
             end
         end
     end
+    random = nil
 end
 
 
@@ -172,7 +180,7 @@ function Game.sequential()
         end)
     else
         local count = 1
-        for mac, v in pairs(Server.clients) do
+        for mac, _ in pairs(Server.clients) do
             if count == Game.seqIndex then
                 Game.currentNode = mac
                 Server.sendToMac(mac, { action = "startBlinking" })

@@ -15,6 +15,8 @@ function Server.sendToMac(mac, data)
     pcall(function()
         Server.connections[mac]:send(json .. " ")
         print("out:", mac, json)
+        json = nil
+        collectgarbage("collect")
     end)
 end
 
@@ -37,10 +39,30 @@ function Server.startPingTimer()
     end)
 end
 
-function Server.sendDone()
-    for mac, v in pairs(Server.clients) do
-        Server.sendToMac(mac, { action = "doneAlarm" })
+function Server.indicateOrder()
+    if Config.inConfigMenu then
+        local count = 0
+        for mac, _ in pairs(Server.clients) do
+            Clock.setTimeout(function()
+                Server.sendToMac(mac, { action = "doneAlarm" })
+            end, count)
+            count = count + 20
+        end
+        count = nil
+        collectgarbage()
     end
+end
+
+function Server.sendDone()
+    local count = 0
+    for mac, _ in pairs(Server.clients) do
+        Clock.setTimeout(function()
+            Server.sendToMac(mac, { action = "doneAlarm" })
+        end, count)
+        count = count + 2
+    end
+    count = nil
+    collectgarbage()
 end
 
 function Server.start(callback)

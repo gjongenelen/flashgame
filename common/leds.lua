@@ -30,6 +30,7 @@ function Led.set(config)
     buffer:set(6, string.char(config['f']['g'], config['f']['r'], config['f']['b']))
     buffer:set(7, string.char(config['g']['g'], config['g']['r'], config['g']['b']))
     ws2812.write(buffer)
+    buffer = nil
 end
 
 function Led.alarmDone()

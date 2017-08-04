@@ -1,58 +1,70 @@
+Config = {
+    button0Count = 0,
+    button0Pushed = false,
+    switch0State = 0,
+    inConfigMenu = false
+}
 
-Config = { resetCount = 0, inConfigMenu = false, settingPushed = false, settingPush = 0, randomButton = false }
+function Config.enterConfigMenu()
+    Led.off()
+    Game.stop()
+    Config.inConfigMenu = true
+    Config.button0Pushed = false
 
+    Config.paintRing()
+    Server.indicateOrder()
+end
+
+function Config.exitConfigMenu()
+    Config.inConfigMenu = false
+    Config.button0Pushed = false
+    Led.off()
+end
+
+function Config.handleButton0Val(value)
+    if value == 1 then -- raise
+        Config.button0Count = 0
+        if Config.button0Pushed and Config.inConfigMenu then
+            Game.addRound()
+            Config.paintRing()
+            Config.button0Pushed = false
+        end
+        if Config.button0Pushed and not Config.inConfigMenu then
+            Game.startAfter(2)
+            Config.button0Pushed = false
+        end
+        Config.button0Pushed = false
+    else
+        if Config.button0Count == 0 then
+            Config.button0Pushed = true
+        end
+        Config.button0Count = Config.button0Count + 1
+    end
+end
+
+function Config.handleSwitch0Val(value)
+    if value == 1 then
+        Config.switch0State = true
+        Game.setRandom(true)
+    else
+        Config.randomButton = false
+        Game.setRandom(false)
+    end
+end
 
 function Config.startListening()
     gpio.mode(0, gpio.OUTPUT)
 
-    local first = true
     tmr.alarm(3, 100, 1, function()
-        local resetButtonVal = gpio.read(0)
-        local gameButtonVal = gpio.read(1)
 
-        if first then
-            if gameButtonVal == 1 then
-                Config.randomButton = true
-                Game.isRandom = true
-            else
-                Config.randomButton = false
-                Game.isRandom = false
-            end
-            first = false
+        Config.handleButton0Val(gpio.read(0))
+        Config.handleSwitch0Val(gpio.read(1))
+
+        if Config.button0Count == 10 and not Config.inConfigMenu then
+            Config.enterConfigMenu()
+        elseif Config.button0Count == 10 and Config.inConfigMenu then
+            Config.exitConfigMenu()
         end
-
-        if resetButtonVal == 1 then
-            Config.resetCount = 0
-            if Config.settingPushed and Config.inConfigMenu then
-                Game.addRound()
-                Config.paintRing()
-                Config.settingPushed = false
-            end
-            if Config.settingPushed and not Config.inConfigMenu then
-                Game.startAfter(2)
-
-                Config.settingPushed = false
-            end
-            Config.settingPushed = false
-        elseif resetButtonVal == 0 then
-            if Config.resetCount == 0 then
-                Config.settingPushed = true
-            end
-        
-            Config.resetCount = Config.resetCount + 1
-        end
-        if Config.resetCount == 10 and not Config.inConfigMenu  then
-            Led.off()
-            Game.stop()
-            Config.inConfigMenu = true
-            Config.settingPushed = false
-            Config.paintRing()
-        elseif Config.resetCount == 10 and Config.inConfigMenu  then
-            Config.inConfigMenu = false
-            Config.settingPushed = false
-            Led.off()
-        end
-
     end)
 end
 
@@ -97,6 +109,4 @@ function Config.paintRing()
         end
         Led.set(config)
     end
-
-
 end
