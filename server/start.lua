@@ -16,7 +16,7 @@ Wifi.startServer()
 Server.start(function(connection, encodedData)
 
     local _, ip = connection:getpeer()
-    print("in:", Server.getMacByIp(ip), encodedData)
+    print(Clock.seconds .. ": in:", Server.getMacByIp(ip), encodedData)
     local data = cjson.decode(encodedData)
 
     if (data['action'] == "pong") then

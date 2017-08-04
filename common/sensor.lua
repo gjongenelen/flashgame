@@ -1,5 +1,5 @@
 
-Sensor = { interval = 20, threshold = 20, avgLight = 0}
+Sensor = { interval = 20, threshold = 30, avgLight = 0}
 
 
 function Sensor.waitForInteraction(callback)

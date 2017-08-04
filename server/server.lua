@@ -14,7 +14,7 @@ function Server.sendToMac(mac, data)
     local _, json = pcall(cjson.encode, data)
     pcall(function()
         Server.connections[mac]:send(json .. " ")
-        print("out:", mac, json)
+        print(Clock.seconds .. ": out:", mac, json)
         json = nil
         collectgarbage("collect")
     end)
@@ -23,9 +23,9 @@ end
 function Server.startPingTimer()
     tmr.alarm(1, 1000, 1, function()
         for mac, v in pairs(Server.clients) do
-            if v < Clock.seconds - 5 and v >= Clock.seconds - 10 then
-                Server.sendToMac(mac, { action = "ping" })
-            end
+--            if v < Clock.seconds - 5 and v >= Clock.seconds - 10 then
+--                Server.sendToMac(mac, { action = "ping" })
+--            end
             if v < Clock.seconds - 16 then
                 print("Client not responding to pings, deauth: ", mac)
                 wifi.ap.deauth(mac)
@@ -58,7 +58,7 @@ function Server.sendDone()
     for mac, _ in pairs(Server.clients) do
         Clock.setTimeout(function()
             Server.sendToMac(mac, { action = "doneAlarm" })
-        end, count)
+        end, count * 2)
         count = count + 2
     end
     count = nil
@@ -82,6 +82,8 @@ function Server.start(callback)
         end)
 
         connection:on("receive", function(connection, bundledData)
+            local _, ip = connection:getpeer()
+            Server.clients[Server.getMacByIp(ip)] = Clock.seconds
             for data in string.gmatch(bundledData, "%S+") do
                 callback(connection, data)
             end
